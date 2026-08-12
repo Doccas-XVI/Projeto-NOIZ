@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tema dark é o padrão (identidade "corre da música" pede fundo escuro).
+   O tema light troca só as variáveis, sem duplicar componentes. */
+:root {
+  --scrollbar-thumb: #3a3a3d;
+}
+
+html.light {
+  --scrollbar-thumb: #c9c9cf;
+}
+
+body {
+  @apply bg-base text-white transition-colors duration-200;
+}
+
+html.light body {
+  @apply bg-base-light text-black;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 8px;
+}
+
+/* Skeleton loading — usado em cards de playlist/álbum enquanto carrega */
+.skeleton {
+  @apply animate-pulse bg-surface rounded-xl;
+}

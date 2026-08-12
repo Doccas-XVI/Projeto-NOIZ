@@ -1,0 +1,43 @@
+# Ambiente de desenvolvimento local. Em produção, backend vai pro
+# Railway/Render, frontend pro Vercel, e o banco pro Neon — este
+# compose serve só pra rodar tudo localmente com um comando.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: noiz
+      POSTGRES_PASSWORD: noiz
+      POSTGRES_DB: noiz
+    ports:
+      - '5432:5432'
+    volumes:
+      - noiz_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U noiz']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://noiz:noiz@postgres:5432/noiz?schema=public
+    ports:
+      - '3333:3333'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+
+volumes:
+  noiz_postgres_data:
