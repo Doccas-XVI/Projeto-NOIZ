@@ -1,0 +1,21 @@
+{
+  // Monorepo: o ESLint precisa rodar DENTRO de cada pasta para achar o .eslintrc e os plugins dela.
+  "eslint.workingDirectories": [
+    { "directory": "backend", "changeProcessCWD": true },
+    { "directory": "frontend", "changeProcessCWD": true }
+  ],
+
+  // O CSS do projeto usa @tailwind / @apply: sem isso o VS Code marca como "Unknown at rule".
+  "css.lint.unknownAtRules": "ignore",
+  "files.associations": { "*.css": "tailwindcss" },
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+
+  // Usa o TypeScript do projeto (o mesmo versionado no package.json), não o embutido no VS Code
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "search.exclude": { "**/node_modules": true, "**/dist": true, "**/package-lock.json": true }
+}

@@ -1,0 +1,221 @@
+// ==========================================================
+// NOIZ — Schema do banco de dados (PostgreSQL via Prisma)
+// ==========================================================
+// Convenções:
+// - Todo model tem id (uuid), createdAt, updatedAt.
+// - Relações N:N usam tabelas explícitas (ex: PlaylistTrack) quando
+//   precisamos guardar metadado da relação (ordem, data de adição etc).
+// - Enums em MAIUSCULO por padrão do Prisma.
+// ==========================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------
+// USUÁRIO
+// ----------------------------------------------------------
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  passwordHash  String   @map("password_hash")
+  avatarUrl     String?  @map("avatar_url")
+  role          UserRole @default(LISTENER)
+  isVerified    Boolean  @default(false) @map("is_verified")
+
+  // Recuperação de senha
+  resetToken       String?   @map("reset_token")
+  resetTokenExpiry DateTime? @map("reset_token_expiry")
+
+  // Refresh token (rotação simples de sessão)
+  refreshTokens RefreshToken[]
+
+  // Relações de domínio
+  artist        Artist?         // se o usuário também for artista (perfil vinculado)
+  playlists     Playlist[]
+  favorites     Favorite[]
+  history       PlayHistory[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum UserRole {
+  LISTENER
+  ARTIST
+  ADMIN
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @map("token_hash")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("refresh_tokens")
+  @@index([userId])
+}
+
+// ----------------------------------------------------------
+// ARTISTA
+// ----------------------------------------------------------
+model Artist {
+  id          String  @id @default(uuid())
+  name        String
+  bio         String?
+  avatarUrl   String? @map("avatar_url")
+  coverUrl    String? @map("cover_url")
+  verified    Boolean @default(false)
+
+  // Um artista pode (ou não) estar vinculado a um usuário dono do perfil
+  userId String? @unique @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  albums Album[]
+  tracks Track[] // músicas "solo" ou feats sem álbum específico
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("artists")
+}
+
+// ----------------------------------------------------------
+// ÁLBUM
+// ----------------------------------------------------------
+model Album {
+  id        String    @id @default(uuid())
+  title     String
+  coverUrl  String?   @map("cover_url")
+  releaseDate DateTime? @map("release_date")
+  type      AlbumType @default(ALBUM)
+
+  artistId String @map("artist_id")
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  tracks Track[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("albums")
+  @@index([artistId])
+}
+
+enum AlbumType {
+  ALBUM
+  SINGLE
+  EP
+}
+
+// ----------------------------------------------------------
+// MÚSICA
+// ----------------------------------------------------------
+model Track {
+  id          String  @id @default(uuid())
+  title       String
+  durationSec Int     @map("duration_sec")
+  fileUrl     String  @map("file_url")   // arquivo de áudio no Supabase Storage
+  coverUrl    String? @map("cover_url")  // capa própria (fallback: capa do álbum)
+  genre       String?
+  playsCount  Int     @default(0) @map("plays_count")
+
+  artistId String @map("artist_id")
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  albumId String? @map("album_id")
+  album   Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  playlists  PlaylistTrack[]
+  favorites  Favorite[]
+  history    PlayHistory[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("tracks")
+  @@index([artistId])
+  @@index([albumId])
+  @@index([title])
+}
+
+// ----------------------------------------------------------
+// PLAYLIST
+// ----------------------------------------------------------
+model Playlist {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  coverUrl    String? @map("cover_url")
+  isPublic    Boolean @default(true) @map("is_public")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tracks PlaylistTrack[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("playlists")
+  @@index([userId])
+}
+
+// Tabela de junção explícita: guarda ORDEM das músicas na playlist
+model PlaylistTrack {
+  id         String   @id @default(uuid())
+  playlistId String   @map("playlist_id")
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  trackId    String   @map("track_id")
+  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  position   Int      // ordem dentro da playlist
+  addedAt    DateTime @default(now()) @map("added_at")
+
+  @@map("playlist_tracks")
+  @@unique([playlistId, trackId])
+  @@index([playlistId])
+}
+
+// ----------------------------------------------------------
+// FAVORITOS (músicas curtidas)
+// ----------------------------------------------------------
+model Favorite {
+  id      String @id @default(uuid())
+  userId  String @map("user_id")
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId String @map("track_id")
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("favorites")
+  @@unique([userId, trackId]) // não deixa favoritar a mesma música duas vezes
+  @@index([userId])
+}
+
+// ----------------------------------------------------------
+// HISTÓRICO DE REPRODUÇÃO
+// ----------------------------------------------------------
+model PlayHistory {
+  id      String @id @default(uuid())
+  userId  String @map("user_id")
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId String @map("track_id")
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  playedAt DateTime @default(now()) @map("played_at")
+
+  @@map("play_history")
+  @@index([userId, playedAt])
+}

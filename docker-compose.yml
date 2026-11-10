@@ -1,0 +1,66 @@
+# Ambiente local completo com UM comando:  docker compose up --build
+#
+# Em produção o desenho é outro: frontend na Vercel, backend no Railway/Render e
+# banco no Neon. Este compose existe para você rodar tudo na sua máquina.
+#
+# Variáveis opcionais (Supabase, e-mail, segredos JWT): copie `.env.example`
+# para `.env` na raiz — o compose lê esse arquivo automaticamente.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: noiz
+      POSTGRES_PASSWORD: noiz
+      POSTGRES_DB: noiz
+    ports:
+      - '5432:5432'
+    volumes:
+      - noiz_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U noiz']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3333
+      DATABASE_URL: postgresql://noiz:noiz@postgres:5432/noiz?schema=public
+      CLIENT_URL: http://localhost:5173
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-troque_este_segredo_de_acesso_em_dev}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-troque_este_segredo_de_refresh_em_dev}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      EMAIL_API_KEY: ${EMAIL_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-NOIZ <onboarding@resend.dev>}
+    ports:
+      - '3333:3333'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://localhost:3333/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Embutida no bundle em tempo de build: é o endereço da API VISTO PELO NAVEGADOR
+        VITE_API_URL: http://localhost:3333/api/v1
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  noiz_postgres_data:

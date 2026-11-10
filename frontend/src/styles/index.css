@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Valores em "R G B" (sem vírgulas) para o Tailwind aplicar opacidade (bg-fg/10).
+   Tema escuro é o padrão; `html.light` troca só as variáveis. */
+:root {
+  --c-base: 11 11 13;
+  --c-surface: 23 23 25;
+  --c-fg: 255 255 255;
+  --c-muted: 138 138 147;
+  --c-accent: 214 255 63;
+  --c-accent-hover: 194 235 44;
+  color-scheme: dark;
+}
+
+html.light {
+  --c-base: 245 245 247;
+  --c-surface: 255 255 255;
+  --c-fg: 12 12 14;
+  --c-muted: 98 98 108;
+  /* verde-oliva mais escuro: o neon some no fundo branco */
+  --c-accent: 95 131 0;
+  --c-accent-hover: 78 108 0;
+  color-scheme: light;
+}
+
+@layer base {
+  body {
+    @apply bg-base text-fg antialiased transition-colors duration-200;
+  }
+
+  /* Foco visível para navegação por teclado (acessibilidade) */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-muted) / 0.35);
+  border-radius: 8px;
+}
+
+/* Skeleton loading — cards, linhas e cabeçalhos enquanto os dados carregam */
+.skeleton {
+  @apply animate-pulse rounded-xl bg-fg/10;
+}
+
+/* Sliders do player (progresso e volume) */
+input[type='range'] {
+  @apply h-1 cursor-pointer appearance-none rounded-full bg-fg/20;
+}
+input[type='range']::-webkit-slider-thumb {
+  @apply h-3 w-3 appearance-none rounded-full bg-fg;
+}
+input[type='range']::-moz-range-thumb {
+  @apply h-3 w-3 rounded-full border-0 bg-fg;
+}
+
+/* O logo é carregado como <img> (não herda `currentColor`): no tema claro
+   escurecemos o texto/barras para manter o contraste. */
+html.light {
+  --logo-filter: brightness(0.45) saturate(1.6);
+}
