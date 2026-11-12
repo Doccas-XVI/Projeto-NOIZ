@@ -1,3 +1,4 @@
+# STATUS - NÃO FINALIZADO
 # 🎧 NOIZ — seu som, seu corre
 
 Plataforma full stack de streaming de música, feita para quem vive o corre da música: ouça, monte playlists e — se for artista — suba suas próprias faixas.
