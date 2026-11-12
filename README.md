@@ -50,7 +50,7 @@ Plataforma full stack de streaming de música, feita para quem vive o corre da m
 
 ## Começando
 
-Pré-requisitos: **Node 20+** e **Docker** (para o Postgres ou para rodar tudo).
+Pré-requisitos: **Node 22+** e **Docker** (para o Postgres ou para rodar tudo).
 
 ### Opção 1 — tudo com Docker
 
