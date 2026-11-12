@@ -3,8 +3,10 @@
 
 Plataforma full stack de streaming de música, feita para quem vive o corre da música: ouça, monte playlists e — se for artista — suba suas próprias faixas.
 
-<!-- PERSONALIZE: coloque aqui 1–2 prints ou um GIF (5–10s) do player funcionando.
-     Sugestão: crie a pasta docs/ e use ![Home](docs/home.png) -->
+<img width="1322" height="605" alt="image" src="https://github.com/user-attachments/assets/2f0f53aa-d3d0-4a2c-a16f-91093e9b01e8" />
+
+<img width="1317" height="599" alt="image" src="https://github.com/user-attachments/assets/55848b6f-0544-4cb2-8843-575059bdbfde" />
+
 
 ## Índice
 
