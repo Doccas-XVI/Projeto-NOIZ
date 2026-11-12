@@ -1,7 +1,7 @@
 # Ambiente local completo com UM comando:  docker compose up --build
 #
 # Em produção o desenho é outro: frontend na Vercel, backend no Railway/Render e
-# banco no Neon. Este compose existe para você rodar tudo na sua máquina.
+# banco no Neon. 
 #
 # Variáveis opcionais (Supabase, e-mail, segredos JWT): copie `.env.example`
 # para `.env` na raiz — o compose lê esse arquivo automaticamente.

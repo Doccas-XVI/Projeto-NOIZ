@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:22-slim
 
 # O Prisma precisa do OpenSSL no Linux; ca-certificates permite HTTPS (Supabase, e-mail)
 RUN apt-get update -y \
