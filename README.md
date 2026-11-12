@@ -20,7 +20,8 @@ Sugestão: Home (tema escuro), player tocando, Estúdio do artista, tema claro. 
 
 ## Por que fiz
 
-Queria um projeto que fosse além do CRUD: autenticação de verdade, upload de arquivo, um player que toca áudio de fato, e uma arquitetura que eu conseguisse explicar camada por camada. Streaming de música reúne tudo isso e ainda tem espaço para identidade visual própria — aqui, fundo escuro, alto contraste e um verde-limão neon, bem longe do visual das plataformas grandes.
+Queria um criar projeto que me desafiasse e sanasse a minha curiosidade sobre como criar uma plataforma de streaming, e que fosse além do CRUD: autenticação de verdade, upload de arquivo, um player que toca áudio de fato, e uma arquitetura que eu conseguisse explicar camada por camada. Streaming de música reúne tudo isso e ainda tem espaço para identidade visual própria — aqui, fundo escuro, alto contraste e um verde-limão neon, bem longe do visual das plataformas grandes.
+
 
 ## O que dá para fazer
 
