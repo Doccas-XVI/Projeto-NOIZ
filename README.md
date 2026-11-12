@@ -91,6 +91,6 @@ O que ainda falta, e que estou aprendendo:
 
 ## Autor
 
-**Frederico Docas de Oliveira**, estudante de Análise e Desenvolvimento de Sistemas na UNA (Belo Horizonte) e em busca da primeira oportunidade como desenvolvedor, fiz esse projeto apenas para aprimorar minhas habilidades como desenvolvedor.
+**Frederico Docas de Oliveira**, estudante de Análise e Desenvolvimento de Sistemas na UNA (Belo Horizonte) e em busca da primeira oportunidade como desenvolvedor.
 
 [GitHub](https://github.com/Doccas-XVI) ·[Linkedin](https://www.linkedin.com/in/frederico-docas/) 
