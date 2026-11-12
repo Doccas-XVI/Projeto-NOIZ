@@ -11,12 +11,10 @@ Ouvintes montam playlists e curtem faixas; artistas independentes sobem as próp
 ![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?logo=prisma&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-<!-- DEMO: quando publicar na Vercel, coloque o link aqui, por exemplo:
-**👉 [Ver o projeto no ar](https://seu-projeto.vercel.app)** -->
+<img width="1322" height="605" alt="NOIZimg1" src="https://github.com/user-attachments/assets/9d057c7e-982d-4f8f-af34-fa2ec66e4847" />
+<img width="1317" height="599" alt="noizimg2" src="https://github.com/user-attachments/assets/4d794b1c-805f-4376-be24-d10ad33958f6" />
 
-<!-- PRINTS: salve as imagens em docs/screenshots/ e troque este comentário por:
-![Home](docs/screenshots/home.png)
-Sugestão: Home (tema escuro), player tocando, Estúdio do artista, tema claro. Um GIF de 5–10s do player vale mais que qualquer parágrafo. -->
+
 
 ## Por que fiz
 
